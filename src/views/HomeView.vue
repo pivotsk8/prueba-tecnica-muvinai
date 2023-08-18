@@ -1,4 +1,18 @@
 <script setup>
+import { collection, addDoc } from 'firebase/firestore';
+import { useFirestore } from 'vuefire';
+import { ref } from 'vue'
+
+const db = useFirestore()
+const document = ref([])
+const updateApto = async () => {
+  const docRef = await addDoc(collection(db, "custumer-data"),
+    {
+      name: "jorge",
+      apto: document.value
+    })
+  console.log(docRef)
+} 
 </script>
 
 <template>
@@ -49,8 +63,10 @@
                       Modificaciones
                     </v-card-title>
                     <v-card-subtitle>Ultima modificacion</v-card-subtitle>
-
-                    <VDivider />
+                    <VDivider class="border-opacity-50 ma-2" />
+                    <div id="modification-data" class="mt-3 mb-2">
+                      <VCardText>informacion</VCardText>
+                    </div>
                   </div>
                 </div>
               </v-card>
@@ -145,28 +161,29 @@
             </v-col>
 
             <v-col cols="6">
-              <v-card color="#1F7087" theme="dark">
-                <div class="d-flex flex-no-wrap justify-space-between">
-                  <div>
-                    <v-card-title class="text-h5">
-                      Supermodel
-                    </v-card-title>
+              <v-card color="#1F7087" class="d-flex flex-column pa-3" theme="dark">
+                <v-card-title class="text-h5">
+                  Apto Medico
+                </v-card-title>
 
-                    <v-card-subtitle>Foster the People</v-card-subtitle>
+                <v-form>
+                  <v-file-input accept=".doc,.docx,.xml,.pdf" prepend-icon="mdi-file-document" />
 
-                    <v-card-actions>
-                      <v-btn class="ms-2" variant="outlined" size="small">
-                        START RADIO
-                      </v-btn>
-                    </v-card-actions>
-                  </div>
-
-                  <v-avatar class="ma-3" size="125" rounded="0">
-                    <v-img src="https://cdn.vuetifyjs.com/images/cards/foster.jpg"></v-img>
-                  </v-avatar>
-                </div>
+                  <v-card-actions class="justify-space-evenly flex-wrap">
+                    <v-btn class="ms-2" variant="outlined" size="small" @click="updateApto">
+                      Subir Documento
+                    </v-btn>
+                    <v-btn class="ms-2" variant="outlined" size="small">
+                      Aprobar
+                    </v-btn>
+                    <v-btn class="ms-2" variant="outlined" size="small">
+                      Descargar
+                    </v-btn>
+                  </v-card-actions>
+                </v-form>
               </v-card>
             </v-col>
+
 
             <v-col cols="6">
               <v-card color="#952175" theme="dark">
