@@ -13,7 +13,7 @@ export default function useImage() {
         data ? upload(data) : null
     }
 
-    const downloadFile = async () => {
+    const downloadFile = () => {
         try {
             const mountainFileRef = storageRef(storage, '/apto/006af8ad15d')
             const {

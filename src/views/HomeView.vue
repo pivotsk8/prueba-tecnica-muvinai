@@ -1,18 +1,56 @@
 <script setup>
-import { collection, addDoc } from 'firebase/firestore';
-import { useFirestore } from 'vuefire';
-import { ref } from 'vue'
+import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { useFirestore, useDocument } from 'vuefire';
+import { ref, watch } from 'vue'
 import useImage from '@/composable/useImage'
+import useDataCustumer from '@/composable/useDataCustumer'
+import CardForTimeline from '../components/CardForTimeline.vue';
 
-const db = useFirestore()
-
-const document = ref([])
+const db = useFirestore();
 
 const {
   uploadImage,
   image,
   downloadFile
 } = useImage()
+
+const { formatingPrice, totalPayments } = useDataCustumer()
+
+const docRef = doc(db, "custumer-data", "koVnsbCCh5aKHbUWHbfr");
+const custumer = useDocument(docRef)
+const document = ref({})
+const active = ref("")
+const alta = ref("")
+const timeLine = ref([
+  {
+    color: "purple-lighten-2",
+    size: "default"
+  },
+  {
+    color: "amber-lighten-1",
+    size: "x-small"
+  },
+  {
+    color: "cyan-lighten-1",
+    size: "default"
+  },
+
+  {
+    color: "red-lighten-1",
+    size: "x-small"
+  },
+
+])
+const payments = ref([])
+
+watch(custumer, (custumer) => {
+  document.value = custumer
+  custumer.active ? active.value = "ACTIVO" : "INACTIVO"
+  custumer.alta ? alta.value = "ALTA" : "INACTIVO"
+  timeLine.value = timeLine.value
+  payments.value = custumer.payments
+})
+
 
 const updateApto = async () => {
   const docRef = await addDoc(collection(db, "custumer-data"),
@@ -21,7 +59,11 @@ const updateApto = async () => {
       name: "jorge",
     })
 
-} 
+}
+
+
+
+
 </script>
 
 <template>
@@ -41,22 +83,22 @@ const updateApto = async () => {
 
                 <div class="py-3">
                   <v-card-title class="text-h5">
-                    Raul Jose
+                    {{ custumer?.name }}
                   </v-card-title>
 
                   <VCardSubtitle>
-                    CEO, Foster Consulting Group
+                    {{ custumer?.lastname }}
                   </VCardSubtitle>
 
                   <v-divider class="border-opacity-50 ma-2" />
 
                   <div class="mt-3 mb-2">
-                    <VCardText class="py-1">DNI</VCardText>
-                    <VCardText class="py-1">ACTIVO</VCardText>
-                    <VCardText class="py-1">Telefono</VCardText>
-                    <VCardText class="py-1">Alta</VCardText>
-                    <VCardText class="py-1">email</VCardText>
-                    <VCardText class="py-1">nacimiento</VCardText>
+                    <VCardText class="py-1">{{ custumer?.dni }}</VCardText>
+                    <VCardText class="py-1">{{ active }}</VCardText>
+                    <VCardText class="py-1">{{ custumer?.phone }}</VCardText>
+                    <VCardText class="py-1">{{ alta }}</VCardText>
+                    <VCardText class="py-1">{{ custumer?.email }}</VCardText>
+                    <VCardText class="py-1">{{ custumer?.birthdate }}</VCardText>
                   </div>
                 </div>
 
@@ -124,88 +166,24 @@ const updateApto = async () => {
 
         <v-row dense class="pa-3">
           <v-col cols="12">
-            <v-card color="#385F73" theme="dark">
+
+            <v-card color="#385F73" theme="dark" class="d-flex flex-column pa-3 h-10">
+              <VCardTile class="text-h5">Pagos</VCardTile>
               <v-timeline class="py-4" direction="horizontal">
-                <v-timeline-item dot-color="purple-lighten-2" fill-dot>
-                  <v-card class="w-auto">
-                    <v-card-title class="bg-purple-lighten-2">
-                      <v-icon class="me-4" icon="mdi-magnify"></v-icon>
-                      <h2 class="font-weight-light">
-                        Title 1
-                      </h2>
-                    </v-card-title>
-                    <v-card-text>
-                      Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod
-                      convenire principes at. Est et nobis iisque percipit.
-                    </v-card-text>
-                  </v-card>
+                <v-timeline-item v-for="(item, i) in timeLine " :key="i" :dot-color="item.color" fill-dot
+                  :size="item.size">
                 </v-timeline-item>
-
-                <v-timeline-item dot-color="amber-lighten-1" fill-dot size="x-small">
-                  <v-card>
-                    <v-card-title class="bg-amber-lighten-1 justify-end">
-                      <h2 class="me-4 font-weight-light">
-                        Title 2
-                      </h2>
-                      <v-icon size="large" icon="mdi-home-outline"></v-icon>
-                    </v-card-title>
-                    <v-card-text>
-                      Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod
-                      convenire principes at. Est et nobis iisque percipit.
-                    </v-card-text>
-                  </v-card>
-                </v-timeline-item>
-
-                <v-timeline-item dot-color="cyan-lighten-1" fill-dot>
-                  <v-card>
-                    <v-card-title class="bg-cyan-lighten-1">
-                      <v-icon class="me-4" size="large" icon="mdi-email-outline"></v-icon>
-                      <h2 class="font-weight-light">
-                        Title 3
-                      </h2>
-                    </v-card-title>
-                    <v-card-text>
-                      Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod
-                      convenire principes at. Est et nobis iisque percipit.
-                    </v-card-text>
-                  </v-card>
-                </v-timeline-item>
-
-                <v-timeline-item dot-color="red-lighten-1" fill-dot size="x-small">
-                  <v-card>
-                    <v-card-title class="bg-red-lighten-1 justify-end">
-                      <h2 class="me-4 font-weight-light">
-                        Title 4
-                      </h2>
-                      <v-icon size="large" icon="mdi-account-multiple-outline"></v-icon>
-                    </v-card-title>
-                    <v-card-text>
-                      Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod
-                      convenire principes at. Est et nobis iisque percipit.
-                    </v-card-text>
-                  </v-card>
-                </v-timeline-item>
-
-                <v-timeline-item dot-color="green-lighten-1" fill-dot>
-                  <v-card>
-                    <v-card-title class="bg-green-lighten-1">
-                      <v-icon class="me-4" size="large" icon="mdi-phone-in-talk"></v-icon>
-                      <h2 class="font-weight-light">
-                        Title 5
-                      </h2>
-                    </v-card-title>
-                    <v-card-text>
-                      Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod
-                      convenire principes at. Est et nobis iisque percipit.
-                    </v-card-text>
-                  </v-card>
-                </v-timeline-item>
+                <CardForTimeline :payments="payments" :timeLine="timeLine" :formatingPrice="formatingPrice" />
               </v-timeline>
+              <VDivider />
+              <VCardText class="d-flex align-end flex-column">Total : {{ formatingPrice(totalPayments(payments)) }}
+              </VCardText>
             </v-card>
+
           </v-col>
 
           <v-col cols="6">
-            <v-card color="#1F7087" class="d-flex flex-column pa-3" theme="dark">
+            <v-card color="#1F7087" class="d-flex flex-column pa-3 h-10" theme="dark">
               <v-card-title class="text-h5">
                 Apto Medico
               </v-card-title>
@@ -240,7 +218,7 @@ const updateApto = async () => {
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-card-title class="text-h5">
-                    Halcyon Days
+                    Asociaciones
                   </v-card-title>
 
                   <v-card-subtitle>Ellie Goulding</v-card-subtitle>
@@ -256,7 +234,7 @@ const updateApto = async () => {
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-card-title class="text-h5">
-                    Halcyon Days
+                    Cupones
                   </v-card-title>
 
                   <v-card-subtitle>Ellie Goulding</v-card-subtitle>
@@ -276,7 +254,7 @@ const updateApto = async () => {
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                   <v-card-title class="text-h5">
-                    Halcyon Days
+                    Accesos a Cedes
                   </v-card-title>
 
                   <v-card-subtitle>Ellie Goulding</v-card-subtitle>
