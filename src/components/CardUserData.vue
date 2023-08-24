@@ -42,7 +42,7 @@ defineProps({
         </div>
 
         <v-card-actions class="justify-start flex-wrap">
-            <v-btn class="ms-2" variant="outlined" size="small" @click="updateApto">
+            <v-btn class="ms-2" variant="outlined" size="small">
                 Dar baja
             </v-btn>
             <v-btn class="ms-2" variant="outlined" size="small">
