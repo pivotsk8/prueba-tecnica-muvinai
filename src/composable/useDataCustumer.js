@@ -1,7 +1,37 @@
-import { computed } from "vue"
+import { doc, updateDoc } from 'firebase/firestore';
+import { useFirestore, useDocument } from 'vuefire';
+import { computed, watch, } from "vue"
+import { useDataCustumerStore } from '../stores/dataCustumer';
 
-export default function name() {
 
+export default function dataCustumer() {
+    let dataCustumer;
+
+    //Obterner al custumer
+    const db = useFirestore();
+    const docRef = doc(db, "custumer-data", "koVnsbCCh5aKHbUWHbfr");
+    const custumer = useDocument(docRef)
+
+    watch(custumer, (newCustumer) => dataCustumer = newCustumer)
+
+
+    //Store dta custumer
+    const dataCustumerStore = useDataCustumerStore()
+
+
+    //Modificacion del custumer
+    const modificationCustumer = async () => {
+
+        //todo cundo me toque cambiar la imagen del usuario voy a hacer una condicion en la que si la urlImg esta basia entonces es la imagen de usuario
+        const { apto, ...dataDb } = dataCustumer
+        const data = {
+            ...dataDb,
+            apto: dataCustumerStore.urlImage
+        }
+        await updateDoc(docRef, data)
+    }
+
+    //helpers
     const formatingPrice = computed(() => {
         return (value) =>
             Number(value).toLocaleString('en-US', {
@@ -9,7 +39,6 @@ export default function name() {
                 currency: 'USD'
             })
     })
-
 
     const totalPayments = computed(() => {
         return (payment) =>
@@ -19,6 +48,8 @@ export default function name() {
 
 
     return {
+        modificationCustumer,
+        custumer,
         formatingPrice,
         totalPayments
     }

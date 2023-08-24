@@ -1,24 +1,25 @@
 <script setup>
-import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
-import { useFirestore, useDocument } from 'vuefire';
 import { ref, watch } from 'vue'
 import useImage from '@/composable/useImage'
 import useDataCustumer from '@/composable/useDataCustumer'
 import CardForTimeline from '../components/CardForTimeline.vue';
 
-const db = useFirestore();
+
 
 const {
   uploadImage,
   image,
-  downloadFile
 } = useImage()
 
-const { formatingPrice, totalPayments } = useDataCustumer()
+const {
+  formatingPrice,
+  totalPayments,
+  custumer,
+  modificationCustumer
+} = useDataCustumer()
 
-const docRef = doc(db, "custumer-data", "koVnsbCCh5aKHbUWHbfr");
-const custumer = useDocument(docRef)
-const document = ref({})
+
+const dataCustumer = ref({})
 const active = ref("")
 const alta = ref("")
 const timeLine = ref([
@@ -44,23 +45,34 @@ const timeLine = ref([
 const payments = ref([])
 
 watch(custumer, (custumer) => {
-  document.value = custumer
+  dataCustumer.value = custumer
   custumer.active ? active.value = "ACTIVO" : "INACTIVO"
   custumer.alta ? alta.value = "ALTA" : "INACTIVO"
   timeLine.value = timeLine.value
   payments.value = custumer.payments
 })
 
+const { apto } = dataCustumer.value;
 
-const updateApto = async () => {
-  const docRef = await addDoc(collection(db, "custumer-data"),
 
-    {
-      name: "jorge",
-    })
 
-}
+const downloadPdf = async () => {
+  try {
+    const response = await fetch(apto);
+    const blob = await response.blob();
 
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.download = 'documento.pdf'; // Cambia el nombre del archivo según tu necesidad
+    link.click();
+
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error al descargar el PDF:', error);
+  }
+};
 
 
 
@@ -166,9 +178,8 @@ const updateApto = async () => {
 
         <v-row dense class="pa-3">
           <v-col cols="12">
-
             <v-card color="#385F73" theme="dark" class="d-flex flex-column pa-3 h-10">
-              <VCardTile class="text-h5">Pagos</VCardTile>
+              <VCardTitle class="text-h5">Pagos</VCardTitle>
               <v-timeline class="py-4" direction="horizontal">
                 <v-timeline-item v-for="(item, i) in timeLine " :key="i" :dot-color="item.color" fill-dot
                   :size="item.size">
@@ -189,22 +200,24 @@ const updateApto = async () => {
               </v-card-title>
 
               <v-form>
-                <v-file-input accept=".doc,.docx,.xml,.pdf" prepend-icon="mdi-file-document" v-model="document"
-                  @change="uploadImage" />
+                <v-file-input accept=".doc,.docx,.xml,.pdf" prepend-icon="mdi-file-document" @change="uploadImage" />
 
-                <div v-if="image" class="w-100" id="document-view">
-                  <iframe :src="image" frameborder="0" width="100%" height="500px"
+                <div class="w-100" id="document-view">
+                  <iframe v-if="image" :src="image" frameborder="0" width="100%" height="500px"
+                    style="border: none; border-radius: 10px;" />
+
+                  <iframe v-else :src="dataCustumer?.apto" frameborder="0" width="100%" height="500px"
                     style="border: none; border-radius: 10px;" />
                 </div>
 
                 <v-card-actions class="justify-space-evenly flex-wrap">
-                  <v-btn class="ms-2" variant="outlined" size="small" @click="updateApto">
+                  <v-btn class="ms-2" variant="outlined" size="small" @click="modificationCustumer">
                     Subir Documento
                   </v-btn>
                   <v-btn class="ms-2" variant="outlined" size="small">
                     Aprobar
                   </v-btn>
-                  <v-btn class="ms-2" variant="outlined" size="small" @click="downloadFile">
+                  <v-btn class="ms-2" variant="outlined" size="small" @click="downloadPdf">
                     Descargar
                   </v-btn>
                 </v-card-actions>
