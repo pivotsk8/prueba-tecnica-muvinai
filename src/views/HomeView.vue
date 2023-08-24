@@ -48,27 +48,7 @@ watch(custumer, (custumer) => {
   payments.value = custumer.payments
 })
 
-const { apto } = dataCustumer.value;
 
-
-
-const downloadPdf = async () => {
-  try {
-    const response = await fetch(apto);
-    const blob = await response.blob();
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = '_blank';
-    link.download = 'documento.pdf'; // Cambia el nombre del archivo según tu necesidad
-    link.click();
-
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Error al descargar el PDF:', error);
-  }
-};
 
 
 

@@ -15,22 +15,6 @@ export default function useImage() {
         data ? upload(data) : null
     }
 
-    // const downloadFile = () => {
-    //     try {
-    //         const mountainFileRef = storageRef(storage, '/apto/006af8ad15d')
-    //         const {
-    //             url,
-    //         } = useStorageFileUrl(mountainFileRef)
-
-    //         watch(url, (newUrl) => {
-    //             if (newUrl) {
-    //                 window.open(newUrl);
-    //             }
-    //         });
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
     const downloadFile = () => {
         watch(url.value, (newUrl) => {
             if (newUrl) {

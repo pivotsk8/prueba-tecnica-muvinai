@@ -6,17 +6,34 @@ const {
     image,
 } = useImage()
 
-defineProps({
+const props = defineProps({
     dataCustumer: {
         type: Object
     },
     modificationCustumer: {
         type: Function
-    },
-    downloadPdf: {
-        type: Function
-    },
+    }
 })
+
+const { apto } = props.dataCustumer;
+
+const downloadPdf = async () => {
+    try {
+        const response = await fetch(apto);
+        const blob = await response.blob();
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.download = 'documento.pdf'; // Cambia el nombre del archivo según tu necesidad
+        link.click();
+
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error al descargar el PDF:', error);
+    }
+};
 </script>
 
 <template>
@@ -32,12 +49,12 @@ defineProps({
                 <iframe v-if="image" :src="image" frameborder="0" width="100%" height="500px"
                     style="border: none; border-radius: 10px;" />
 
-                <iframe v-else :src="dataCustumer?.apto" frameborder="0" width="100%" height="500px"
+                <iframe v-else :src="props.dataCustumer?.apto" frameborder="0" width="100%" height="500px"
                     style="border: none; border-radius: 10px;" />
             </div>
 
             <v-card-actions class="justify-space-evenly flex-wrap">
-                <v-btn class="ms-2" variant="outlined" size="small" @click="modificationCustumer">
+                <v-btn class="ms-2" variant="outlined" size="small" @click="props.modificationCustumer">
                     Subir Documento
                 </v-btn>
                 <v-btn class="ms-2" variant="outlined" size="small">
