@@ -2,10 +2,13 @@
 import { ref, watch } from 'vue'
 import useDataCustumer from '@/composable/useDataCustumer'
 import CardForTimeline from '../components/CardForTimeline.vue';
-import CardUserData from '../components/CardUserData.vue';
 import CardModificationData from '../components/CardModificationData.vue';
+import CardUserData from '../components/CardUserData.vue';
 import CardInformationInscription from '../components/CardInformationInscription.vue';
 import CardAptoMedical from '../components/CardAptoMedical.vue';
+import DataUserForm from '../components/forms/DataUserForm.vue';
+import { useDataCustumerStore } from '../stores/dataCustumer';
+const dataStore = useDataCustumerStore()
 
 const {
   formatingPrice,
@@ -13,7 +16,6 @@ const {
   custumer,
   modificationCustumer
 } = useDataCustumer()
-
 
 const dataCustumer = ref({})
 const active = ref("")
@@ -47,11 +49,6 @@ watch(custumer, (custumer) => {
   timeLine.value = timeLine.value
   payments.value = custumer.payments
 })
-
-
-
-
-
 </script>
 
 <template>
@@ -62,7 +59,9 @@ watch(custumer, (custumer) => {
         <v-row dense class="pa-3">
 
           <v-col cols="12" class="pr-0">
-            <CardUserData :dataCustumer="dataCustumer" :alta="alta" :active="active" />
+            <CardUserData v-if="!dataStore.modificationDataUser" :dataCustumer="dataCustumer" :alta="alta"
+              :active="active" />
+            <DataUserForm v-else :dataCustumer="dataCustumer" :alta="alta" :active="active" />
           </v-col>
 
           <v-col cols="12" class="pr-0">
@@ -78,7 +77,6 @@ watch(custumer, (custumer) => {
       </VCol>
 
       <VCol cols="9" md="9" sm="12">
-
         <v-row dense class="pa-3">
           <v-col cols="12">
             <v-card color="#385F73" theme="dark" class="d-flex flex-column pa-3 h-10">
@@ -93,7 +91,6 @@ watch(custumer, (custumer) => {
               <VCardText class="d-flex align-end flex-column">Total : {{ formatingPrice(totalPayments(payments)) }}
               </VCardText>
             </v-card>
-
           </v-col>
 
           <v-col cols="6">
@@ -160,8 +157,6 @@ watch(custumer, (custumer) => {
             </v-card>
 
           </v-col>
-
-
         </v-row>
       </VCol>
     </VRow>

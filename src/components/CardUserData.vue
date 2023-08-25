@@ -1,4 +1,9 @@
 <script setup>
+import { useDataCustumerStore } from '../stores/dataCustumer';
+
+//store
+const dataStore = useDataCustumerStore()
+
 defineProps({
     dataCustumer: {
         type: Object
@@ -48,7 +53,7 @@ defineProps({
             <v-btn class="ms-2" variant="outlined" size="small">
                 Invalidar acceso
             </v-btn>
-            <v-btn class="ms-2" variant="outlined" size="small">
+            <v-btn class="ms-2" variant="outlined" size="small" @click="dataStore.modificationData">
                 Modificar
             </v-btn>
         </v-card-actions>
