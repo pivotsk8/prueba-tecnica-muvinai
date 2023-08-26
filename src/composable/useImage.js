@@ -29,10 +29,16 @@ export default function useImage() {
         : null
     )
 
+    const avatarImage = computed(() => url.value
+        ? (url.value, dataCustomer.avatarImage = url.value)
+        : null
+    )
+
     return {
         url,
         uploadImage,
         image,
+        avatarImage,
         downloadFile
     }
 }

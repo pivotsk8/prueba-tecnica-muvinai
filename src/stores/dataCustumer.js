@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 export const useDataCustumerStore = defineStore('dataCustumer', () => {
     const urlImage = ref("")
+    const avatarImage = ref("")
     const modificationDataUser = ref(false)
 
     const modificationData = () => {
-        console.log("holis", modificationDataUser.value)
         modificationDataUser.value = !modificationDataUser.value;
     }
 
-    return { urlImage, modificationData, modificationDataUser }
+    return { urlImage, avatarImage, modificationData, modificationDataUser }
 })

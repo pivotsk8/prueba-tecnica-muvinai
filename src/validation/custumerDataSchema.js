@@ -35,7 +35,7 @@ export const custumerDataSchema = {
         return true
 
     },
-    date(value) {
+    birthDate(value) {
         if (!value) {
             return 'Este campo es obligatorio';
         }
