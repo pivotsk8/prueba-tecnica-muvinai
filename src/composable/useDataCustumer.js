@@ -22,7 +22,6 @@ export default function dataCustumer() {
     //Modificacion del custumer
     const modificationCustumer = async () => {
 
-        //todo cundo me toque cambiar la imagen del usuario voy a hacer una condicion en la que si la urlImg esta basia entonces es la imagen de usuario
         const { apto, ...dataDb } = dataCustumer
         const data = {
             ...dataDb,
@@ -51,6 +50,7 @@ export default function dataCustumer() {
         modificationCustumer,
         custumer,
         formatingPrice,
-        totalPayments
+        totalPayments,
+        docRef
     }
 }

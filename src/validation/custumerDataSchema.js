@@ -21,7 +21,7 @@ export const custumerDataSchema = {
         return true
 
     },
-    lastName(value) {
+    lastname(value) {
         if (!value) {
             return 'Este campo es obligatorio';
         }
@@ -35,7 +35,7 @@ export const custumerDataSchema = {
         return true
 
     },
-    birthDate(value) {
+    birthdate(value) {
         if (!value) {
             return 'Este campo es obligatorio';
         }
