@@ -57,7 +57,7 @@ const submit = handleSubmit(async (values) => {
         photoPerfil: url.value
     }
 
-    photoPerfil?.value ? await updateDoc(docRef, data) : await updateDoc(docRef, custumer)
+    photoPerfil ? await updateDoc(docRef, data) : await updateDoc(docRef, custumer)
     dataStore.modificationData()
 })
 
