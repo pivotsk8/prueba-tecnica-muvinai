@@ -1,9 +1,10 @@
 <script setup>
+import useDataCustumer from '@/composable/useDataCustumer'
 import { useDataCustumerStore } from '../stores/dataCustumer';
+import { updateDoc } from 'firebase/firestore';
 
 //store
 const dataStore = useDataCustumerStore()
-
 defineProps({
     dataCustumer: {
         type: Object
@@ -15,6 +16,31 @@ defineProps({
         type: String
     }
 })
+const {
+    custumer,
+    docRef
+} = useDataCustumer()
+
+const submit = (async (value) => {
+    const { alta, active, ...custumerData } = custumer.value
+
+    if (value === 'acces') {
+        const changeAcces = alta ? false : true
+        const data = { ...custumerData, active, alta: changeAcces }
+        await updateDoc(docRef, data)
+        return
+    }
+
+    if (value === 'baja') {
+        const changeActive = active ? false : true
+        const data = { ...custumerData, alta, active: changeActive }
+        await updateDoc(docRef, data)
+        return
+    }
+
+})
+
+
 </script>
 
 <template>
@@ -47,10 +73,10 @@ defineProps({
         </div>
 
         <v-card-actions class="justify-start flex-wrap">
-            <v-btn class="ms-2" variant="outlined" size="small">
+            <v-btn class="ms-2" variant="outlined" size="small" @click="submit('baja')">
                 Dar baja
             </v-btn>
-            <v-btn class="ms-2" variant="outlined" size="small">
+            <v-btn class="ms-2" variant="outlined" size="small" @click="submit('acces')">
                 Invalidar acceso
             </v-btn>
             <v-btn class="ms-2" variant="outlined" size="small" @click="dataStore.modificationData">

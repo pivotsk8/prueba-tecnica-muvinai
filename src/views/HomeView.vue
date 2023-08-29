@@ -44,8 +44,8 @@ const payments = ref([])
 
 watch(custumer, (custumer) => {
   dataCustumer.value = custumer
-  custumer.active ? active.value = "ACTIVO" : "INACTIVO"
-  custumer.alta ? alta.value = "ALTA" : "INACTIVO"
+  active.value = custumer.active ? "ACTIVO" : "INACTIVO"
+  alta.value = custumer.alta ? "ALTA" : "INACTIVO"
   timeLine.value = timeLine.value
   payments.value = custumer.payments
 })
@@ -94,8 +94,7 @@ watch(custumer, (custumer) => {
           </v-col>
 
           <v-col cols="6">
-            <CardAptoMedical :data-custumer="dataCustumer" :download-pdf="downloadPdf"
-              :modification-custumer="modificationCustumer" />
+            <CardAptoMedical :data-custumer="dataCustumer" :modification-custumer="modificationCustumer" />
           </v-col>
 
           <v-col cols="6" class="pa-1 d-flex flex-column">

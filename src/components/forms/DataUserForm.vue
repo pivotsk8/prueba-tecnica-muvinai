@@ -43,8 +43,8 @@ const birthdate = useField('birthdate')
 
 watch(custumer, (custumer) => {
     name.value.value = custumer.name,
-        lastname.value.value = custumer.lastname,
-        dni.value.value = custumer.dni,
+        lastname.value.value = custumer.lastname.toUpperCase()
+    dni.value.value = custumer.dni,
         phone.value.value = custumer.phone,
         email.value.value = custumer.email,
         birthdate.value.value = custumer.birthdate
@@ -75,7 +75,8 @@ s
 
             <VTextField label=" Nombre" v-model="name.value.value" :error-messages="name.errorMessage.value" />
 
-            <VTextField label=" Apellido" v-model="lastname.value.value" :error-messages="lastname.errorMessage.value" />
+            <VTextField label=" Apellido" v-model="lastname.value.value" :error-messages="lastname.errorMessage.value"
+                uppercase />
 
             <VTextField label=" DNI" v-model="dni.value.value" :error-messages="dni.errorMessage.value" />
 
