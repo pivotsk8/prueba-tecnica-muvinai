@@ -1,4 +1,12 @@
 <script setup>
+import { ref, watch } from 'vue'
+import useDataCustumer from '@/composable/useDataCustumer'
+
+const { custumer } = useDataCustumer()
+const modifications = ref([])
+watch(custumer, (newCustumer) => {
+    modifications.value = newCustumer.modification
+})
 
 </script>
 
@@ -13,7 +21,11 @@
                 <v-card-subtitle>Ultima modificacion</v-card-subtitle>
                 <VDivider class="border-opacity-50 ma-2" />
                 <div id="modification-data" class="mt-3 mb-2">
-                    <VCardText>informacion</VCardText>
+                    <VCardText v-for="modification in modifications">
+                        {{ modification.person }}
+                        <VCardText>{{ modification?.modification }}</VCardText>
+                        <VDivider class="border-opacity-50 ma-2" />
+                    </VCardText>
                 </div>
             </div>
         </div>
