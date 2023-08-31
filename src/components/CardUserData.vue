@@ -13,7 +13,7 @@ defineProps({
         type: String
     },
     active: {
-        type: String
+        type: Array
     }
 })
 const {
@@ -62,6 +62,7 @@ const submit = (async (value) => {
                 <v-divider class="border-opacity-50 ma-2" />
 
                 <div class="mt-3 mb-2">
+                    <VCardText class="py-1">{{ dataCustumer?.planActive }}</VCardText>
                     <VCardText class="py-1">{{ dataCustumer?.dni }}</VCardText>
                     <VCardText class="py-1">{{ active }}</VCardText>
                     <VCardText class="py-1">{{ dataCustumer?.phone }}</VCardText>

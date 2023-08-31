@@ -47,5 +47,6 @@ export const custumerDataSchema = {
             return 'Este campo es obligatorio';
         }
         return true
-    }
+    },
+
 }

@@ -8,6 +8,17 @@ watch(custumer, (newCustumer) => {
     modifications.value = newCustumer.modification
 })
 
+const formatDate = (timestampObj) => {
+    const seconds = timestampObj.seconds;
+    const nanoseconds = timestampObj.nanoseconds;
+
+    const epoch = new Date(0);
+    const targetDate = new Date(epoch.getTime() + seconds * 1000 + nanoseconds / 1000000);
+
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return targetDate.toLocaleDateString(undefined, options);
+}
+
 </script>
 
 
@@ -22,8 +33,23 @@ watch(custumer, (newCustumer) => {
                 <VDivider class="border-opacity-50 ma-2" />
                 <div id="modification-data" class="mt-3 mb-2">
                     <VCardText v-for="modification in modifications">
-                        {{ modification.person }}
-                        <VCardText>{{ modification?.modification }}</VCardText>
+                        {{ modification?.person }}
+                        <VCardText>
+                            <div class="d-flex align-center my-0">
+                                Cambio el
+                                <p class="mx-1 font-weight-bold">
+                                    {{ modification?.fieldName }}
+                                </p>
+                                por
+                                <p class="mx-1 font-weight-bold ">
+                                    {{ modification?.modification }}
+                                </p>
+                                el
+                                <p class="mx-1 font-weight-bold ">
+                                    {{ formatDate(modification?.modificationDate) }}
+                                </p>
+                            </div>
+                        </VCardText>
                         <VDivider class="border-opacity-50 ma-2" />
                     </VCardText>
                 </div>

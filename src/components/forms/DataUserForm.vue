@@ -1,5 +1,5 @@
 <script setup>
-import { watch } from 'vue'
+import { watch, ref } from 'vue'
 import { useDataCustumerStore } from '../../stores/dataCustumer';
 import { useForm, useField } from 'vee-validate'
 import { custumerDataSchema as validationSchema } from '@/validation/custumerDataSchema'
@@ -15,10 +15,13 @@ const {
 
 //store
 const dataStore = useDataCustumerStore()
+
 const {
     custumer,
+    uploadModificationsCustumer,
     docRef
 } = useDataCustumer()
+
 defineProps({
     dataCustumer: {
         type: Object,
@@ -30,6 +33,10 @@ defineProps({
         type: String
     }
 })
+const typePlans = ref([])
+const lastFieldValues = ref({});
+
+
 
 //Validaciones
 const { handleSubmit } = useForm({ validationSchema })
@@ -38,17 +45,24 @@ const photoPerfil = useField('photoPerfil')
 const name = useField('name')
 const lastname = useField('lastname')
 const dni = useField('dni')
+const planActive = useField('planActive')
 const phone = useField('phone')
 const birthdate = useField('birthdate')
 
 watch(custumer, (custumer) => {
+    typePlans.value = custumer.typePlan
     name.value.value = custumer.name,
         lastname.value.value = custumer.lastname.toUpperCase()
+    planActive.value.value = custumer.planActive
     dni.value.value = custumer.dni,
         phone.value.value = custumer.phone,
         email.value.value = custumer.email,
         birthdate.value.value = custumer.birthdate
 })
+
+const handleFieldChange = (fieldName, newValue) => {
+    lastFieldValues.value[fieldName] = newValue;
+};
 
 const submit = handleSubmit(async (values) => {
     const { photoPerfil, ...custumer } = values
@@ -58,11 +72,14 @@ const submit = handleSubmit(async (values) => {
     }
 
     photoPerfil ? await updateDoc(docRef, data) : await updateDoc(docRef, custumer)
+
+    for (const fieldName in lastFieldValues.value) {
+        const fieldValue = lastFieldValues.value[fieldName];
+        uploadModificationsCustumer(fieldName, fieldValue);
+    }
     dataStore.modificationData()
 })
-
 </script>
-s
 <template>
     <VCard color="#1F7087" theme="dark" class="d-flex flex-column flex-wrap">
         <VForm class="pa-2">
@@ -73,19 +90,21 @@ s
             <VTextField label="Foto Perfil" v-model="photoPerfil.value.value" type="file" accept=".jpg,.img"
                 @change="uploadImage" />
 
-            <VTextField label=" Nombre" v-model="name.value.value" :error-messages="name.errorMessage.value" />
+            <VTextField label="Nombre" v-model="name.value.value" :error-messages="name.errorMessage.value"
+                @blur="handleFieldChange('Nombre', name.value.value)" />
 
-            <VTextField label=" Apellido" v-model="lastname.value.value" :error-messages="lastname.errorMessage.value"
-                uppercase />
+            <VTextField label="Apellido" v-model="lastname.value.value" :error-messages="lastname.errorMessage.value"
+                uppercase @blur="handleFieldChange('Apellido', lastname.value.value)" />
 
-            <VTextField label=" DNI" v-model="dni.value.value" :error-messages="dni.errorMessage.value" />
+            <VTextField label="DNI" v-model="dni.value.value" :error-messages="dni.errorMessage.value" />
 
-            <VTextField label=" Telefono" v-model="phone.value.value" :error-messages="phone.errorMessage.value" />
+            <VSelect label="Tipo de Plan" :items="typePlans" v-model="planActive.value.value" />
 
-            <VTextField label=" Email" type="email" v-model="email.value.value"
-                :error-messages="email.errorMessage.value" />
+            <VTextField label="Telefono" v-model="phone.value.value" :error-messages="phone.errorMessage.value" />
 
-            <VTextField label=" Fecha Nacimiento" v-model="birthdate.value.value"
+            <VTextField label="Email" type="email" v-model="email.value.value" :error-messages="email.errorMessage.value" />
+
+            <VTextField label="Fecha Nacimiento" v-model="birthdate.value.value"
                 :error-messages="birthdate.errorMessage.value" type="date" />
 
             <VCardActions class="justify-start flex-wrap">

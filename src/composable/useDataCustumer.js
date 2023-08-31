@@ -21,11 +21,38 @@ export default function dataCustumer() {
 
     //Modificacion del custumer
     const modificationCustumer = async () => {
-
         const { apto, ...dataDb } = dataCustumer
         const data = {
             ...dataDb,
             apto: dataCustumerStore.urlImage
+        }
+        await updateDoc(docRef, data)
+    }
+
+    const uploadModificationsCustumer = async (fieldName, newValue) => {
+        const { modification, ...dataDb } = dataCustumer
+        const newModification = [
+            ...modification,
+            {
+                person: 'andrea',
+                modificationDate: new Date,
+                modification: newValue,
+                fieldName
+            }
+        ]
+        const data = {
+            ...dataDb,
+            modification: newModification
+        }
+        await updateDoc(docRef, data)
+    }
+
+    const uploadAptoAprouval = async ({ aptoCaducidad, check }) => {
+        const { checkapto, ...dataDb } = dataCustumer
+        const data = {
+            ...dataDb,
+            checkapto: check,
+            validityAptoDate: aptoCaducidad
         }
         await updateDoc(docRef, data)
     }
@@ -48,8 +75,10 @@ export default function dataCustumer() {
 
     return {
         modificationCustumer,
+        uploadModificationsCustumer,
         custumer,
         formatingPrice,
+        uploadAptoAprouval,
         totalPayments,
         docRef
     }
